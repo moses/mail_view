@@ -95,7 +95,7 @@ class MailView
         :mail => mail,
         :from => mail_header(mail, "From"), # includes the display name, mail.from doesn't
         :reply_to  => mail_header(mail, "Reply-To"),
-        :to  => mail_header(mail, "To"),
+        :to  => [mail_header(mail, "To")].flatten.join(", "),
         :body_part => body_part
       )
     end
