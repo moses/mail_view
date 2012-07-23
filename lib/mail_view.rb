@@ -86,6 +86,22 @@ class MailView
         body_part = mail.parts.find { |part| part.content_type.match(content_type) } || mail.parts.first
       end
 
-      email_template.render(Object.new, :name => name, :mail => mail, :body_part => body_part)
+      from = 
+      to = 
+      email_template.render(
+        Object.new,
+        :helper => Rack::Utils,
+        :name => name,
+        :mail => mail,
+        :from => mail_header(mail, "From"), # includes the display name, mail.from doesn't
+        :reply_to  => mail_header(mail, "Reply-To"),
+        :to  => mail_header(mail, "To"),
+        :body_part => body_part
+      )
+    end
+
+    def mail_header(mail, name)
+      header = mail.header_fields.detect { |field| field.name == name }
+      header ? header.value : nil
     end
 end
